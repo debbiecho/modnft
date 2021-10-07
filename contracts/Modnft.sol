@@ -43,7 +43,7 @@ contract Modnft is ERC721, Ownable {
         require(whitelist[msg.sender] == 1, "Address is not whitelisted.");
         require(nftCounter < nftCap, "Nft cap reached.");
         uint256 newItemId = nftCounter;
-        nftCounter += nftCounter;
+        nftCounter = nftCounter + 1;
         whitelist[msg.sender] = 2;
 
         _safeMint(msg.sender, newItemId);
@@ -51,7 +51,7 @@ contract Modnft is ERC721, Ownable {
     } 
 
     function mint(uint256 _nr_to_mint) public payable {
-        require(_nr_to_mint >= 1 && _nr_to_mint <= 3, "Can not mint more nfts than 3 per tx.");
+        require(_nr_to_mint >= 1 && _nr_to_mint <= 3, "Can not mint more than 3 nfts per tx.");
         require(msg.value == (weiPrice * _nr_to_mint), "Wrong ETH amount.");
         require((nftCounter + _nr_to_mint) <= nftCap, "Nft cap reached.");
 
@@ -61,10 +61,9 @@ contract Modnft is ERC721, Ownable {
         payable(owner()).transfer(msg.value);
 
         for (i ; i < target; i++){
-            uint256 newItemId = i;
-            nftCounter = i + 1;
-            _safeMint(msg.sender, newItemId);
-            emit minted(msg.sender, newItemId);
+            nftCounter = nftCounter + 1;
+            _safeMint(msg.sender, i);
+            emit minted(msg.sender, i);
         }
     }
 }
